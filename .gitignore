@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+.env
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Kafka local docker volumes
+infra/kafka/data/
+infra/kafka/logs/
+
+# IDEs
+.vscode/
+.idea/
+
+# Docker
+*.pid
+*.seed
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
