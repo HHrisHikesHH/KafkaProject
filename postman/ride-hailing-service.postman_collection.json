@@ -1,0 +1,124 @@
+{
+    "info": {
+        "name": "Ride Hailing Service API",
+        "description": "API collection for the ride-hailing microservice system",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Driver Service",
+            "item": [
+                {
+                    "name": "Update Driver Location",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8001/update_location/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8001",
+                            "path": ["update_location", ""]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"driver_id\": \"DRIVER456\",\n  \"location\": {\n    \"latitude\": 12.9716,\n    \"longitude\": 77.5946,\n    \"address\": \"MG Road, Bangalore\"\n  },\n  \"current_status\": \"available\",\n  \"vehicle\": {\n    \"vehicle_type\": \"sedan\",\n    \"plate_number\": \"KA01AB1234\",\n    \"model\": \"Honda City\",\n    \"color\": \"White\"\n  },\n  \"last_updated\": \"2025-09-17T14:25:00Z\"\n}"
+                        },
+                        "description": "Update driver's current location and status"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Rider Service",
+            "item": [
+                {
+                    "name": "Request Ride",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8000/request_ride/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8000",
+                            "path": ["request_ride", ""]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"rider_id\": \"RIDER123\",\n  \"pickup\": {\n    \"latitude\": 12.9716,\n    \"longitude\": 77.5946,\n    \"address\": \"MG Road, Bangalore\"\n  },\n  \"destination\": {\n    \"latitude\": 13.0827,\n    \"longitude\": 77.5877,\n    \"address\": \"Hebbal, Bangalore\"\n  },\n  \"pickup_time\": \"2025-09-17T14:30:00Z\",\n  \"passenger_count\": 2\n}"
+                        },
+                        "description": "Request a new ride"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Trip Service",
+            "item": [
+                {
+                    "name": "Get All Trips",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://localhost:8002/trips/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8002",
+                            "path": ["trips", ""]
+                        },
+                        "description": "Get all active trips"
+                    }
+                },
+                {
+                    "name": "Get Trip by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://localhost:8002/trips/{trip_id}",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8002",
+                            "path": ["trips", "{trip_id}"]
+                        },
+                        "description": "Get details of a specific trip"
+                    }
+                },
+                {
+                    "name": "Update Trip Status",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:8002/trips/{trip_id}/status",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8002",
+                            "path": ["trips", "{trip_id}", "status"]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"trip_started\",\n  \"location\": {\n    \"latitude\": 12.9716,\n    \"longitude\": 77.5946,\n    \"address\": \"Current Location\"\n  }\n}"
+                        },
+                        "description": "Update the status of a trip"
+                    }
+                }
+            ]
+        }
+    ]
+}
