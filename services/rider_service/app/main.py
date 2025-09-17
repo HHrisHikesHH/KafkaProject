@@ -11,10 +11,18 @@ TOPIC = "rider_requests"
 
 logging.basicConfig(level=logging.INFO)
 
+class Location(BaseModel):
+    latitude: float
+    longitude: float
+    address: str
+
 class RideRequest(BaseModel):
     rider_id: str
-    pickup: str
-    destination: str
+    pickup: Location
+    destination: Location
+    pickup_time: str  # ISO format datetime
+    passenger_count: int
+    special_notes: str | None = None
 
 app = FastAPI()
 

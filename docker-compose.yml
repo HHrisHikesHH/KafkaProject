@@ -50,3 +50,14 @@ services:
     command: python consumer.py
     depends_on:
       - kafka
+
+  trip_service:
+    build: ./services/trip_service/app
+    volumes:
+      - ./services/trip_service/app:/app
+    working_dir: /app
+    command: uvicorn main:app --host 0.0.0.0 --port 8002 --reload
+    ports:
+      - "8002:8002"
+    depends_on:
+      - kafka

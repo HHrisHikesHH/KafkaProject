@@ -5,9 +5,37 @@ import json
 import uvicorn
 from pydantic import BaseModel
 
+from enum import Enum
+from typing import Optional
+
+class DriverStatus(str, Enum):
+    AVAILABLE = "available"
+    BUSY = "busy"
+    OFFLINE = "offline"
+
+class VehicleType(str, Enum):
+    SEDAN = "sedan"
+    SUV = "suv"
+    PREMIUM = "premium"
+    MINI = "mini"
+
+class Location(BaseModel):
+    latitude: float
+    longitude: float
+    address: Optional[str] = None
+
+class Vehicle(BaseModel):
+    vehicle_type: VehicleType
+    plate_number: str
+    model: str
+    color: str
+
 class LocationUpdate(BaseModel):
     driver_id: str
-    location: str
+    location: Location
+    current_status: DriverStatus
+    vehicle: Vehicle
+    last_updated: str  # ISO format datetime
 app = FastAPI()
 
 KAFKA_BOOTSTRAP_SERVERS = "kafka:9092"
