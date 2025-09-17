@@ -17,16 +17,36 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   rider_service:
-    build: ./services/rider_service
+    build: ./services/rider_service/app
     volumes:
-      - ./services/rider_service:/app
+      - ./services/rider_service/app:/app
     working_dir: /app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
+    depends_on:
+      - kafka
+
+  driver_service:
+    build: ./services/driver_service/app
+    volumes:
+      - ./services/driver_service/app:/app
+    working_dir: /app
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    ports:
+      - "8001:8001"
+    depends_on:
+      - kafka
+
+  matching_service:
+    build: ./services/matching_service/app
+    volumes:
+      - ./services/matching_service/app:/app
+    working_dir: /app
+    command: python consumer.py
     depends_on:
       - kafka

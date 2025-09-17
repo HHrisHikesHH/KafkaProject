@@ -1,22 +1,17 @@
-from fastapi import FastAPI
-from aiokafka import AIOKafkaProducer, errors
 import asyncio
-import uvicorn
+from aiokafka import AIOKafkaProducer, errors
+from fastapi import FastAPI
 import json
+import uvicorn
 from pydantic import BaseModel
-import logging
+
+class LocationUpdate(BaseModel):
+    driver_id: str
+    location: str
+app = FastAPI()
 
 KAFKA_BOOTSTRAP_SERVERS = "kafka:9092"
-TOPIC = "rider_requests"
-
-logging.basicConfig(level=logging.INFO)
-
-class RideRequest(BaseModel):
-    rider_id: str
-    pickup: str
-    destination: str
-
-app = FastAPI()
+TOPIC = "driver_locations"
 
 producer = None
 
@@ -27,10 +22,10 @@ async def start_producer_with_retry():
     while True:
         try:
             await producer.start()
-            logging.info("Kafka Producer connected")
+            print("Kafka Producer started successfully")
             break
         except errors.KafkaConnectionError:
-            logging.warning("Kafka unavailable, retrying in 3 seconds...")
+            print("Kafka unavailable, retrying in 3 seconds...")
             await asyncio.sleep(3)
 
 @app.on_event("startup")
@@ -41,13 +36,11 @@ async def startup_event():
 async def shutdown_event():
     await producer.stop()
 
-@app.post("/request_ride/")
-async def request_ride(request: RideRequest):
+@app.post("/update_location/")
+async def update_location(request: LocationUpdate):
     event = request.dict()
-    logging.info(f"Sending event: {event}")
     await producer.send_and_wait(TOPIC, json.dumps(event).encode("utf-8"))
-    logging.info("Event sent successfully")
-    return {"status": "ride_requested", "event": event}
+    return {"status": "location_updated", "event": event}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
