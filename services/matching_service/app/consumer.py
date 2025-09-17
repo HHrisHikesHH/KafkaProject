@@ -111,6 +111,8 @@ async def handle_driver_location(data: dict):
         await handle_ride_request(producer, request_data)
 
 async def consume():
+    global producer  # Make producer global so it can be accessed by handle functions
+    
     # Initialize Kafka producer for sending trip updates
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
     await producer.start()
