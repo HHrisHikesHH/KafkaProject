@@ -17,9 +17,9 @@ logger = logging.getLogger(__name__)
 fake = Faker()
 
 # Service endpoints
-DRIVER_SERVICE = "http://driver_service:8001"
-RIDER_SERVICE = "http://rider_service:8000"
-TRIP_SERVICE = "http://trip_service:8002"
+DRIVER_SERVICE = "http://localhost:8001"
+RIDER_SERVICE = "http://localhost:8000"
+TRIP_SERVICE = "http://localhost:8002"
 
 # Bangalore area boundaries (approximately)
 BANGALORE_BOUNDS = {
@@ -44,7 +44,8 @@ class Driver:
         bearing = random.uniform(0, 360)
         # Calculate new position
         d = distance.distance(kilometers=distance_km)
-        new_lat, new_lng = d.destination(current, bearing)
+        destination_point = d.destination(current, bearing)
+        new_lat, new_lng = destination_point.latitude, destination_point.longitude
         self.location = {
             "latitude": new_lat,
             "longitude": new_lng,
@@ -92,8 +93,8 @@ class RideSimulator:
             "vehicle": {
                 "vehicle_type": driver.vehicle_type,
                 "plate_number": f"KA{random.randint(1,99):02d}M{random.randint(1000,9999)}",
-                "model": fake.vehicle_make_model(),
-                "color": fake.color_name()
+                "model": random.choice(["Swift", "Innova", "XUV500", "Honda City", "Tata Nexon", "Hyundai i20"]),
+                "color": random.choice(["Red", "Blue", "White", "Silver", "Black", "Grey"])
             },
             "last_updated": datetime.utcnow().isoformat()
         }
@@ -138,11 +139,11 @@ class RideSimulator:
         
         dist = random.uniform(min_dist, max_dist)
         d = distance.distance(kilometers=dist)
-        dest_lat, dest_lng = d.destination(current, bearing)
+        destination_point = d.destination(current, bearing)
         
         # Ensure destination is within Bangalore bounds
-        dest_lat = max(min(dest_lat, BANGALORE_BOUNDS["max_lat"]), BANGALORE_BOUNDS["min_lat"])
-        dest_lng = max(min(dest_lng, BANGALORE_BOUNDS["max_lng"]), BANGALORE_BOUNDS["min_lng"])
+        dest_lat = max(min(destination_point.latitude, BANGALORE_BOUNDS["max_lat"]), BANGALORE_BOUNDS["min_lat"])
+        dest_lng = max(min(destination_point.longitude, BANGALORE_BOUNDS["max_lng"]), BANGALORE_BOUNDS["min_lng"])
         
         destination = {
             "latitude": dest_lat,
